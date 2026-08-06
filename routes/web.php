@@ -7,12 +7,13 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TestimonialController;
 use App\Http\Middleware\Admin;
 
 route::get('/',[HomeController::class, 'home']);
 
-route::get('/dashboard',[HomeController::class, 'login_home'])->middleware(['auth', 'verified'])->name('dashboard');
-route::get('/myorders',[HomeController::class, 'myorders'])->middleware(['auth', 'verified']);
+route::get('/dashboard',[HomeController::class, 'login_home'])->middleware(['auth'])->name('dashboard');
+route::get('/myorders',[HomeController::class, 'myorders'])->middleware(['auth']);
 
 
 
@@ -66,16 +67,14 @@ route::get('product_search',[AdminController::class, 'product_search'])
 route::get('product_details/{id}',[HomeController::class, 'product_details']);
 
 
-route::get('add_cart/{id}',[HomeController::class, 'add_cart'])->middleware(['auth', 'verified']);
+route::get('add_cart/{id}',[HomeController::class, 'add_cart'])->middleware(['auth']);
 
 
-route::get('mycart',[HomeController::class, 'mycart'])->middleware(['auth', 'verified']);
+route::get('mycart',[HomeController::class, 'mycart'])->middleware(['auth']);
 
 
-Route::delete('remove-cart/{id}', [HomeController::class, 'remove_cart'])->name('remove.cart')->middleware(['auth', 'verified']);
+Route::delete('remove-cart/{id}', [HomeController::class, 'remove_cart'])->name('remove.cart')->middleware(['auth']);
 
-
-Route::post('confirm_order', [HomeController::class, 'confirm_order'])->middleware(['auth', 'verified']);
 
 Route::controller(HomeController::class)->group(function(){
 
@@ -85,13 +84,13 @@ Route::controller(HomeController::class)->group(function(){
 
 });
 
-
-
-Route::post('/confirm_order', [OrderController::class, 'confirmOrder'])->name('confirm.order');
+Route::post('/confirm_order', [OrderController::class, 'confirmOrder'])
+    ->middleware(['auth'])
+    ->name('confirm.order');
 
 Route::get('/shop', [HomeController::class, 'shop']);
 Route::get('/why', [HomeController::class, 'why']);
-Route::get('/testimonial', [HomeController::class, 'testimonial']);
+Route::get('/testimonial', [TestimonialController::class, 'index']);
 Route::get('/contact', [HomeController::class, 'contact']);
 
 

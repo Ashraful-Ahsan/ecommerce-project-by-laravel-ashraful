@@ -9,7 +9,7 @@
 <body style="background-color: rgb(128, 177, 128)">
     <center>
         <h3>Customer name: {{$data->name}}</h3>
-        <h3>Customer address: {{$data->rec_address}}</h3>
+        <h3>Customer address: {{$data->address}}</h3>
         <h3>Phone: {{$data->phone}}</h3>
         <h2>Product title: {{$data->product->title}}</h2>
         <h2>Product price: {{$data->product->price}}</h2>

@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->string('payment_status')->after('product_id')->default('cash on delivery');
-        });
+        if (!Schema::hasColumn('orders', 'payment_status')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->string('payment_status')->after('product_id')->default('cash on delivery');
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('payment_status');
-        });
+        if (Schema::hasColumn('orders', 'payment_status')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->dropColumn('payment_status');
+            });
+        }
     }
 };

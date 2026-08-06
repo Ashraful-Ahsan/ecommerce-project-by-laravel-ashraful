@@ -22,13 +22,18 @@ class OrderController extends Controller
             $order = new Order();
             $order->user_id = Auth::id();
             $order->name = $request->name1;
-            $order->rec_address = $request->address;
+            $order->address = $request->address;
             $order->phone = $request->phone;
             $order->product_id = $cart->product_id;
             $order->quantity = 1; // Assuming 1 quantity per item (modify as needed)
             $order->price = $cart->product->price;
             $order->status = 'Pending';
             $order->payment_status = 'Cash on Delivery';
+            $order->product_details = json_encode([
+                'product_id' => $cart->product_id,
+                'quantity' => 1,
+                'price' => $cart->product->price,
+            ]);
             $order->save();
         }
 

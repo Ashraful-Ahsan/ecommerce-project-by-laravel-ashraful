@@ -77,7 +77,7 @@
 
                 <tr>
                     <td>{{$data->name}}</td>
-                    <td>{{$data->rec_address}}</td>
+                    <td>{{$data->address}}</td>
                     <td>{{$data->phone}}</td>
                     <td>{{$data->product->title}}</td>
                     <td>{{$data->product->price}}</td>

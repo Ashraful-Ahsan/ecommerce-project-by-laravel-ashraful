@@ -10,7 +10,8 @@ use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 
 
-use Stripe;
+use Stripe\Stripe;
+use Stripe\PaymentIntent;
 use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
@@ -144,9 +145,19 @@ class HomeController extends Controller
             $order=new Order;
             $order->product_id=$carts->product_id;
             $order->name=$name;
-            $order->rec_address=$address;
+            $order->address=$address;
             $order->phone=$phone;
             $order->user_id=$userid;
+            $order->quantity = 1;
+            $order->price = $carts->product->price;
+            $order->total_price = $carts->product->price * 1;
+            $order->payment_status = 'Cash on Delivery';
+            $order->status = 'Pending';
+            $order->product_details = json_encode([
+                'product_id' => $carts->product_id,
+                'quantity' => 1,
+                'price' => $carts->product->price,
+            ]);
 
             $order->save();
 
@@ -183,42 +194,82 @@ class HomeController extends Controller
 
     //payment gateway integration
     public function stripe()
-
-    {
-
-        return view('home.stripe');
-
+{
+    if (!Auth::check()) {
+        return redirect()->route('login');
     }
 
-    public function stripePost(Request $request)
+    $user = Auth::user();
 
-    {
+    $cartItems = Cart::where('user_id', $user->id)->get();
 
-        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+    if ($cartItems->isEmpty()) {
+        return redirect()->back()->with('error', 'Your cart is empty.');
+    }
 
+    $amount = 0;
 
+    foreach ($cartItems as $item) {
+        $amount += $item->product->price * ($item->quantity ?? 1);
+    }
 
-        Stripe\Charge::create ([
+    Stripe::setApiKey(config('services.stripe.secret'));
 
-                "amount" => 100 * 100,
+    $paymentIntent = PaymentIntent::create([
+        'amount' => $amount * 100,
+        'currency' => 'usd',
+        'automatic_payment_methods' => [
+            'enabled' => true,
+        ],
+    ]);
 
-                "currency" => "usd",
+    return view('home.stripe', [
+        'amount' => $amount,
+        'clientSecret' => $paymentIntent->client_secret,
+    ]);
+}
 
-                "source" => $request->stripeToken,
+ public function stripePost(Request $request)
+{
+    $userid = Auth::id();
 
-                "description" => "Test payment from complete"
+    $cart = Cart::where('user_id', $userid)->get();
 
+    foreach ($cart as $item) {
+
+        $order = new Order();
+
+        $order->product_id = $item->product_id;
+        $order->user_id = $userid;
+
+        $order->name = Auth::user()->name;
+
+        $order->address = "Demo Address";
+        $order->phone = "01700000000";
+
+        $order->quantity = 1;
+
+        $order->price = $item->product->price;
+
+        $order->total_price = $item->product->price;
+
+        $order->payment_status = "Paid (Demo)";
+
+        $order->status = "Pending";
+
+        $order->product_details = json_encode([
+            'product_id' => $item->product_id,
+            'quantity' => 1,
+            'price' => $item->product->price,
         ]);
 
-
-
-        Session::flash('success', 'Payment successful!');
-
-
-
-        return back();
-
+        $order->save();
     }
+
+    Cart::where('user_id', $userid)->delete();
+
+    return redirect('/myorders')->with('success', 'Payment Successful!');
+}
 
 
 

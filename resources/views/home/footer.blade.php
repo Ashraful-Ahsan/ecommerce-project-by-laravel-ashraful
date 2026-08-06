@@ -49,9 +49,9 @@
                             <i class="fa fa-phone" aria-hidden="true"></i>
                             <span> +880 01794547308 </span>
                         </a>
-                        <a href="mailto:info@ahsantech.xyz">
+                        <a href="mailto:ahsanxp72@gamil.com">
                             <i class="fa fa-envelope" aria-hidden="true"></i>
-                            <span> info@ahsantech.xyz </span>
+                            <span> ahsanxp72@gamil.com </span>
                         </a>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
         <div class="container">
             <p>
                 &copy; <span id="displayYear"></span> All Rights Reserved | Powered by
-                <a href="https://ahsantech.xyz/" target="_blank">AhsanTech</a>
+                <a href="https://ahsantech.vercel.app/" target="_blank">AhsanTech</a>
             </p>
         </div>
     </footer>

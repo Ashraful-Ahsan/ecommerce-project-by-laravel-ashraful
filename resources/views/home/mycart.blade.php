@@ -74,7 +74,7 @@
 
     <div class="order_deg">
 
-            <form action="{{url('confirm_order')}}" method="Post">
+            <form action="{{ route('confirm.order') }}" method="POST">
     @csrf
     <div class="div_gap">
         <label for="">Receiver Name</label>

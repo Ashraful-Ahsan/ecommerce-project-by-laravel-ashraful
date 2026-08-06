@@ -66,7 +66,28 @@
 
 
               <div class="detail-box">
-                <h6>Category: {{$data->category}}</h6>
+                @php
+                    $categoryClass = 'category-default';
+                    $categorySlug = strtolower(str_replace(' ', '-', $data->category));
+                    $categoryMap = [
+                        'electronics' => 'category-electronics',
+                        'fashion' => 'category-fashion',
+                        'home decor' => 'category-home-decor',
+                        'toys' => 'category-toys',
+                        'beauty' => 'category-beauty',
+                        'sports' => 'category-sports',
+                        'food' => 'category-food',
+                        'health' => 'category-health',
+                        'books' => 'category-books',
+                        'accessories' => 'category-accessories',
+                        'gadgets' => 'category-gadgets',
+                        'kids' => 'category-kids',
+                    ];
+                    if(isset($categoryMap[$categorySlug])) {
+                        $categoryClass = $categoryMap[$categorySlug];
+                    }
+                @endphp
+                <h6>Category: <span class="category-badge {{ $categoryClass }}">{{ $data->category }}</span></h6>
                 <h6> Available Quantity: {{$data->quantity}} </h6>
                   <span>
                     ${{$data->quantity}}
